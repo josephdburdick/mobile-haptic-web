@@ -13,9 +13,9 @@ export type HapticSnapDrawerProps = {
 };
 
 const defaultSnaps: DrawerSnap[] = [
-  { id: "peek", label: "Peek", heightPercent: 22, hapticPreset: "nudge" },
-  { id: "mid", label: "Mid", heightPercent: 52, hapticPreset: "success" },
-  { id: "full", label: "Full", heightPercent: 82, hapticPreset: "buzz" }
+  { id: "peek", label: "Peek", heightPercent: 22, hapticPreset: "light" },
+  { id: "mid", label: "Mid", heightPercent: 52, hapticPreset: "medium" },
+  { id: "full", label: "Full", heightPercent: 82, hapticPreset: "rigid" }
 ];
 
 export function HapticSnapDrawer({ snaps = defaultSnaps }: HapticSnapDrawerProps) {

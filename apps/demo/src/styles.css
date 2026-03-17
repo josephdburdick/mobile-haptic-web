@@ -11,7 +11,11 @@
 
   color: var(--fg);
   background: var(--bg);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -36,6 +40,22 @@ body,
   height: 100%;
   overflow: hidden;
   background: var(--bg);
+}
+
+/* ---------- site logo ---------- */
+
+.siteLogo {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 10;
+  line-height: 0;
+}
+
+.siteLogoImg {
+  width: 60px;
+  height: auto;
+  filter: invert(1);
 }
 
 /* ---------- carousel rail ---------- */
@@ -143,7 +163,9 @@ code {
   color: var(--fg);
   font-size: 0.9rem;
   font-weight: 500;
-  transition: background 150ms ease, border-color 150ms ease;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
 }
 
 .primaryLink:hover {
@@ -196,6 +218,37 @@ code {
   font-size: 0.72rem;
   color: var(--muted);
   opacity: 0.65;
+}
+
+/* ---------- streaming toggle ---------- */
+
+.streamToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: fit-content;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 0.55rem 1.4rem;
+  background: transparent;
+  color: var(--fg);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.streamToggle:hover {
+  background: var(--accent);
+  border-color: var(--muted);
+}
+
+.streamToggle:active {
+  transform: scale(0.97);
 }
 
 /* ---------- QR share panel ---------- */
@@ -256,7 +309,9 @@ code {
   background: var(--border);
   cursor: pointer;
   padding: 0;
-  transition: background 200ms ease, transform 200ms ease;
+  transition:
+    background 200ms ease,
+    transform 200ms ease;
 }
 
 .slideDot[data-active="true"] {

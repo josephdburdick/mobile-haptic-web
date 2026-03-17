@@ -8,6 +8,8 @@ export type HapticStreamingTextProps = {
   hapticEveryNChars?: number;
   hapticPreset?: string | number | number[];
   loop?: boolean;
+  /** When false the streaming timer is paused. Defaults to true. */
+  playing?: boolean;
 };
 
 export function shouldTriggerHaptic(totalChars: number, hapticEveryNChars: number): boolean {
@@ -19,14 +21,26 @@ export function HapticStreamingText({
   charsPerTick = 2,
   intervalMs = 55,
   hapticEveryNChars = 8,
-  hapticPreset = "nudge",
-  loop = true
+  hapticPreset = "selection",
+  loop = true,
+  playing = true
 }: HapticStreamingTextProps) {
   const [index, setIndex] = useState(0);
   const lastTriggerCharRef = useRef(0);
+  const prevPlayingRef = useRef(playing);
   const { trigger } = useWebHaptics();
 
   useEffect(() => {
+    if (playing && !prevPlayingRef.current) {
+      setIndex(0);
+      lastTriggerCharRef.current = 0;
+    }
+    prevPlayingRef.current = playing;
+  }, [playing]);
+
+  useEffect(() => {
+    if (!playing) return;
+
     const timer = window.setInterval(() => {
       setIndex((current) => {
         if (current >= sourceText.length) {
@@ -41,7 +55,7 @@ export function HapticStreamingText({
     }, intervalMs);
 
     return () => window.clearInterval(timer);
-  }, [charsPerTick, intervalMs, loop, sourceText.length]);
+  }, [charsPerTick, intervalMs, loop, playing, sourceText.length]);
 
   useEffect(() => {
     if (!shouldTriggerHaptic(index, hapticEveryNChars)) return;

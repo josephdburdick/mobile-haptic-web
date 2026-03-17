@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { TruncatedText } from "@j0e/haptic-text";
 import { HapticRadioGroup } from "@j0e/haptic-text/haptic-radio-group";
 import { HapticSnapDrawer } from "@j0e/haptic-text/haptic-snap-drawer";
@@ -70,6 +70,31 @@ function SlideDots({
   );
 }
 
+function StreamingTextSlide({ isVisible }: { isVisible: boolean }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!isVisible) setIsPlaying(false);
+  }, [isVisible]);
+
+  const toggle = useCallback(() => setIsPlaying((v) => !v), []);
+
+  return (
+    <div className="stack">
+      <p>Simulated token stream with a subtle haptic pulse every few characters.</p>
+      <HapticStreamingText
+        sourceText="We can add tactile rhythm to live AI output so updates feel intentional instead of noisy. This component throttles haptic triggers to avoid fatigue while still reinforcing each burst of new content."
+        hapticEveryNChars={12}
+        intervalMs={65}
+        playing={isPlaying}
+      />
+      <button type="button" className="streamToggle" onClick={toggle}>
+        {isPlaying ? "Stop" : "Start"}
+      </button>
+    </div>
+  );
+}
+
 export function App() {
   const railRef = useRef<HTMLDivElement | null>(null);
   const [activeSlideId, setActiveSlideId] = useState("home");
@@ -115,10 +140,11 @@ export function App() {
           <HapticRadioGroup
             name="haptic-preset"
             options={[
-              { id: "success", label: "Success", hapticPreset: "success" },
-              { id: "nudge", label: "Nudge", hapticPreset: "nudge" },
-              { id: "error", label: "Error", hapticPreset: "error" },
-              { id: "buzz", label: "Buzz", hapticPreset: "buzz" }
+              { id: "selection", label: "Selection (8 ms)", hapticPreset: "selection" },
+              { id: "light", label: "Light (15 ms)", hapticPreset: "light" },
+              { id: "medium", label: "Medium (25 ms)", hapticPreset: "medium" },
+              { id: "heavy", label: "Heavy (35 ms)", hapticPreset: "heavy" },
+              { id: "success", label: "Success (2 pulses)", hapticPreset: "success" }
             ]}
           />
         </div>
@@ -137,16 +163,7 @@ export function App() {
     {
       id: "streaming-text",
       title: "AI Streaming Text",
-      content: (
-        <div className="stack">
-          <p>Simulated token stream with a subtle haptic pulse every few characters.</p>
-          <HapticStreamingText
-            sourceText="We can add tactile rhythm to live AI output so updates feel intentional instead of noisy. This component throttles haptic triggers to avoid fatigue while still reinforcing each burst of new content."
-            hapticEveryNChars={12}
-            intervalMs={65}
-          />
-        </div>
-      )
+      content: <StreamingTextSlide isVisible={activeSlideId === "streaming-text"} />
     },
     {
       id: "goodbye",
@@ -223,6 +240,9 @@ export function App() {
 
   return (
     <main className="pageShell">
+      <a href="https://j0e.me" target="_blank" rel="noreferrer" className="siteLogo">
+        <img src="/j0e-logo--solid.svg" alt="j0e" className="siteLogoImg" />
+      </a>
       <div className="slidesRail" ref={railRef}>
         {slides.map((slide) => (
           <section key={slide.id} className="slide" data-slide-id={slide.id}>

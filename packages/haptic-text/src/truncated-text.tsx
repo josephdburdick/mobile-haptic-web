@@ -19,7 +19,7 @@ export function TruncatedText({
   className,
   copyButtonLabel = "Copy",
   enableCopy = true,
-  hapticPreset = "nudge"
+  hapticPreset = "selection"
 }: TruncatedTextProps) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
