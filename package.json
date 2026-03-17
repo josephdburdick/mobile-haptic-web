@@ -2,24 +2,16 @@
   "name": "mobile-haptic-web",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.1.7",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
-  },
-  "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.7",
-    "typescript": "^5"
+    "dev": "npm run dev --workspace @j0e/haptic-demo",
+    "build": "npm run build:package && npm run build:demo",
+    "build:package": "npm run build --workspace @j0e/haptic-text",
+    "build:demo": "npm run build --workspace @j0e/haptic-demo",
+    "lint": "npm run lint --workspace @j0e/haptic-text && npm run lint --workspace @j0e/haptic-demo",
+    "test": "npm run test --workspace @j0e/haptic-text"
   }
 }

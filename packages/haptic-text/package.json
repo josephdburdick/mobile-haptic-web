@@ -1,0 +1,60 @@
+{
+  "name": "@j0e/haptic-text",
+  "version": "0.1.0",
+  "description": "React components with mobile haptic feedback patterns for dynamic text UX.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/truncated-text.cjs",
+  "module": "./dist/truncated-text.js",
+  "types": "./dist/truncated-text.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/truncated-text.d.ts",
+      "import": "./dist/truncated-text.js",
+      "require": "./dist/truncated-text.cjs"
+    },
+    "./haptic-streaming-text": {
+      "types": "./dist/haptic-streaming-text.d.ts",
+      "import": "./dist/haptic-streaming-text.js",
+      "require": "./dist/haptic-streaming-text.cjs"
+    },
+    "./haptic-radio-group": {
+      "types": "./dist/haptic-radio-group.d.ts",
+      "import": "./dist/haptic-radio-group.js",
+      "require": "./dist/haptic-radio-group.cjs"
+    },
+    "./haptic-snap-drawer": {
+      "types": "./dist/haptic-snap-drawer.d.ts",
+      "import": "./dist/haptic-snap-drawer.js",
+      "require": "./dist/haptic-snap-drawer.cjs"
+    },
+    "./patterns": {
+      "types": "./dist/patterns.d.ts",
+      "import": "./dist/patterns.js",
+      "require": "./dist/patterns.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/truncated-text.tsx src/haptic-streaming-text.tsx src/haptic-radio-group.tsx src/haptic-snap-drawer.tsx src/patterns.ts --format esm,cjs --dts --clean",
+    "lint": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "web-haptics": "^0.0.6"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

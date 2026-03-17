@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# mobile-haptic-web
 
-## Getting Started
+Proof-of-concept workspace that includes:
 
-First, run the development server:
+- `packages/haptic-text`: publishable React package using [`web-haptics`](https://github.com/lochie/web-haptics)
+- `apps/demo`: GitHub Pages-ready full-screen carousel demo
+
+## Install
+
+```bash
+npm install
+```
+
+## Run demo locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Build
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Package outputs
 
-## Learn More
+Build just the npm package:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build:package
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Build just the static demo:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build:demo
+```
 
-## Deploy on Vercel
+## Demo slides
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Home screen
+2. `TruncatedText` (UUID + email built-in patterns, copy interaction)
+3. Haptic radio preset selector
+4. Drawer snap-point haptics
+5. AI streaming text haptics
+6. Closing slide linking back to [j0e.me](https://j0e.me)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## GitHub Pages
+
+Deploy is configured in `.github/workflows/deploy-demo.yml` and publishes `apps/demo/dist`.
