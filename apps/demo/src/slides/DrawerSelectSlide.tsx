@@ -45,20 +45,31 @@ function SearchIcon() {
 function SingleSelect({ soundEnabled }: { soundEnabled?: boolean }) {
   const [open, setOpen] = useState(false)
   const [value, setValue] = useState<string | null>(null)
+  const [touched, setTouched] = useState(false)
   const { trigger } = useHaptics({ debug: soundEnabled })
   const contentRef = useRef<HTMLDivElement | null>(null)
 
+  const hasError = touched && !value
+
+  function handleOpenChange(next: boolean) {
+    if (!next && !value) {
+      setTouched(true)
+      trigger("error")
+    }
+    setOpen(next)
+  }
+
   return (
     <div className="dsField">
-      <label className="dsLabel">Favorite Fruit</label>
+      <label className="dsLabel">Favorite Fruit <span className="dsRequired">*</span></label>
       <Drawer.Root
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         snapPoints={[0.55]}
         modal
       >
         <Drawer.Trigger asChild>
-          <button type="button" className="dsTrigger">
+          <button type="button" className="dsTrigger" data-error={hasError}>
             <span className={value ? "dsTriggerValue" : "dsTriggerPlaceholder"}>
               {value ?? "Select a fruit…"}
             </span>
@@ -90,6 +101,7 @@ function SingleSelect({ soundEnabled }: { soundEnabled?: boolean }) {
                     data-selected={value === fruit}
                     onClick={() => {
                       setValue(fruit)
+                      setTouched(false)
                       trigger("selection")
                       setOpen(false)
                     }}
@@ -103,17 +115,24 @@ function SingleSelect({ soundEnabled }: { soundEnabled?: boolean }) {
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
+      {hasError && <p className="dsError">Please select a fruit.</p>}
     </div>
   )
 }
 
 // --- Multi Select ---
 
+const MIN_TOPPINGS = 2
+
 function MultiSelect({ soundEnabled }: { soundEnabled?: boolean }) {
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [touched, setTouched] = useState(false)
   const { trigger } = useHaptics({ debug: soundEnabled })
   const contentRef = useRef<HTMLDivElement | null>(null)
+
+  const isValid = selected.size >= MIN_TOPPINGS
+  const hasError = touched && !isValid
 
   function toggle(item: string) {
     setSelected((prev) => {
@@ -129,6 +148,18 @@ function MultiSelect({ soundEnabled }: { soundEnabled?: boolean }) {
     })
   }
 
+  function handleOpenChange(next: boolean) {
+    if (!next) {
+      setTouched(true)
+      if (selected.size < MIN_TOPPINGS) {
+        trigger("error")
+      } else {
+        trigger("medium")
+      }
+    }
+    setOpen(next)
+  }
+
   const displayValue =
     selected.size === 0
       ? null
@@ -138,15 +169,15 @@ function MultiSelect({ soundEnabled }: { soundEnabled?: boolean }) {
 
   return (
     <div className="dsField">
-      <label className="dsLabel">Toppings</label>
+      <label className="dsLabel">Toppings <span className="dsRequired">* min {MIN_TOPPINGS}</span></label>
       <Drawer.Root
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         snapPoints={[0.6]}
         modal
       >
         <Drawer.Trigger asChild>
-          <button type="button" className="dsTrigger">
+          <button type="button" className="dsTrigger" data-error={hasError}>
             <span className={displayValue ? "dsTriggerValue" : "dsTriggerPlaceholder"}>
               {displayValue ?? "Select toppings…"}
             </span>
@@ -168,17 +199,19 @@ function MultiSelect({ soundEnabled }: { soundEnabled?: boolean }) {
                 <button
                   type="button"
                   className="dsDoneButton"
-                  onClick={() => {
-                    trigger("medium")
-                    setOpen(false)
-                  }}
+                  onClick={() => handleOpenChange(false)}
                 >
                   Done
                 </button>
               </div>
               <Drawer.Description className="dsDescription">
-                Tap to toggle. Press Done when finished.
+                Choose at least {MIN_TOPPINGS}. Tap to toggle, then press Done.
               </Drawer.Description>
+              {hasError && (
+                <p className="dsErrorInline">
+                  Select at least {MIN_TOPPINGS} toppings ({MIN_TOPPINGS - selected.size} more needed).
+                </p>
+              )}
               <div className="dsOptionList" role="listbox" aria-multiselectable="true">
                 {TOPPINGS.map((topping) => {
                   const isSelected = selected.has(topping)
@@ -204,6 +237,7 @@ function MultiSelect({ soundEnabled }: { soundEnabled?: boolean }) {
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
+      {hasError && <p className="dsError">Please select at least {MIN_TOPPINGS} toppings.</p>}
     </div>
   )
 }

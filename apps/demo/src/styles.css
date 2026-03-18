@@ -904,3 +904,46 @@ code {
   color: var(--muted);
   font-size: 0.82rem;
 }
+
+.dsRequired {
+  font-weight: 400;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dsTrigger[data-error="true"] {
+  border-color: hsl(0 72% 51%);
+  animation: dsShake 300ms ease;
+}
+
+.dsError {
+  font-size: 0.75rem;
+  color: hsl(0 72% 65%);
+  margin: 0;
+  animation: dsFadeIn 200ms ease;
+}
+
+.dsErrorInline {
+  font-size: 0.78rem;
+  color: hsl(0 72% 65%);
+  margin: 0;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+  background: hsl(0 72% 51% / 0.1);
+  animation: dsFadeIn 200ms ease;
+}
+
+@keyframes dsShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+
+@keyframes dsFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
