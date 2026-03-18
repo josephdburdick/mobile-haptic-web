@@ -8,7 +8,7 @@ export type HapticStreamingTextProps = {
   hapticEveryNChars?: number;
   hapticPreset?: string | number | number[];
   loop?: boolean;
-  /** When false the streaming timer is paused. Defaults to true. */
+  /** When false the streaming timer is paused. Defaults to false. */
   playing?: boolean;
 };
 
@@ -23,7 +23,7 @@ export function HapticStreamingText({
   hapticEveryNChars = 8,
   hapticPreset = "selection",
   loop = true,
-  playing = true
+  playing = false
 }: HapticStreamingTextProps) {
   const [index, setIndex] = useState(0);
   const lastTriggerCharRef = useRef(0);

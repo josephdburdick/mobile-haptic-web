@@ -220,6 +220,173 @@ code {
   opacity: 0.65;
 }
 
+/* ---------- vaul drawer ---------- */
+
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: hsla(0, 0%, 0%, 0.45);
+  z-index: 50;
+}
+
+.drawerContent {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 100dvh;
+  z-index: 51;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  outline: none;
+}
+
+.drawerHandle {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+  margin: 0.6rem auto 0;
+}
+
+.drawerBody {
+  padding: 1.25rem 1.5rem 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.drawerTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--fg);
+}
+
+.drawerDescription {
+  margin: 0;
+}
+
+.drawerStatus {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.drawerSnaps {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.drawerSnapPill {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-family: inherit;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.drawerSnapPill[data-active="true"] {
+  background: var(--accent);
+  border-color: var(--fg);
+  color: var(--fg);
+}
+
+.drawerDetail {
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- orientation slide ---------- */
+
+.orientationDisplay {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: hsl(222 60% 6%);
+}
+
+.orientationIcon {
+  transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.orientationIcon[data-orientation="landscape"] {
+  transform: rotate(90deg);
+}
+
+.orientationPhone {
+  width: 32px;
+  height: 56px;
+  border: 2px solid var(--fg);
+  border-radius: 6px;
+  position: relative;
+}
+
+.orientationNotch {
+  width: 12px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--fg);
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.orientationLabel {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.orientationMode {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: var(--fg);
+}
+
+.orientationHint {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.orientationContent {
+  min-height: 0;
+}
+
+.orientationCard {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  background: hsl(222 60% 6%);
+  display: grid;
+  gap: 0.4rem;
+}
+
+.orientationCardTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.orientationCardRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
 /* ---------- streaming toggle ---------- */
 
 .streamToggle {
