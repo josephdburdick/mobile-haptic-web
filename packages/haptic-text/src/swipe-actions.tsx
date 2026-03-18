@@ -21,6 +21,9 @@ const containerBaseStyle: CSSProperties & { containerType?: string } = {
   scrollSnapType: "x mandatory",
   containerType: "inline-size",
   scrollbarWidth: "none",
+  touchAction: "pan-x",
+  overscrollBehaviorX: "contain",
+  WebkitOverflowScrolling: "touch",
 };
 
 const actionSlotStyle: CSSProperties = {
@@ -90,7 +93,7 @@ export function SwipeActions({
       <div style={{ ...actionSlotStyle, scrollSnapAlign: "start" }}>
         {leftAction}
       </div>
-      <div style={{ width: "100cqw", scrollSnapAlign: "center" }}>
+      <div style={{ width: "100%", minWidth: "100%", scrollSnapAlign: "center" }}>
         {children}
       </div>
       <div style={{ ...actionSlotStyle, scrollSnapAlign: "end" }}>
