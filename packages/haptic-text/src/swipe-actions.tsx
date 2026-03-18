@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
-import { useWebHaptics } from "web-haptics/react";
+import { useHaptics } from "./use-haptics";
 
 export type SwipePosition = "left" | "center" | "right";
 
@@ -40,7 +40,7 @@ export function SwipeActions({
 }: SwipeActionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const positionRef = useRef<SwipePosition>("center");
-  const { trigger } = useWebHaptics({ debug });
+  const { trigger } = useHaptics({ debug });
 
   useEffect(() => {
     const container = containerRef.current;

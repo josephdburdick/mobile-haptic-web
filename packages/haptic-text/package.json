@@ -37,6 +37,11 @@
       "types": "./dist/patterns.d.ts",
       "import": "./dist/patterns.js",
       "require": "./dist/patterns.cjs"
+    },
+    "./use-haptics": {
+      "types": "./dist/use-haptics.d.ts",
+      "import": "./dist/use-haptics.js",
+      "require": "./dist/use-haptics.cjs"
     }
   },
   "files": [
@@ -44,7 +49,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/truncated-text.tsx src/haptic-streaming-text.tsx src/haptic-radio-group.tsx src/haptic-snap-drawer.tsx src/swipe-actions.tsx src/patterns.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/truncated-text.tsx src/haptic-streaming-text.tsx src/haptic-radio-group.tsx src/haptic-snap-drawer.tsx src/swipe-actions.tsx src/patterns.ts src/use-haptics.ts --format esm,cjs --dts --clean",
     "lint": "tsc --noEmit",
     "test": "vitest run"
   },

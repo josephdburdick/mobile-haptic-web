@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useWebHaptics } from "web-haptics/react";
+import { useHaptics } from "./use-haptics";
 
 export type HapticRadioOption = {
   id: string;
@@ -16,7 +16,7 @@ export type HapticRadioGroupProps = {
 
 export function HapticRadioGroup({ name, options, defaultOptionId, debug }: HapticRadioGroupProps) {
   const [selectedId, setSelectedId] = useState(defaultOptionId ?? options[0]?.id ?? "");
-  const { trigger } = useWebHaptics({ debug });
+  const { trigger } = useHaptics({ debug });
 
   return (
     <fieldset
