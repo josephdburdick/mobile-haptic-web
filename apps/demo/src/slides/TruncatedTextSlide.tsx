@@ -16,11 +16,11 @@ export function TruncatedTextSlide({ soundEnabled }: TruncatedTextSlideProps) {
       <p className="truncatedSectionLabel">Copy always visible</p>
       <div className="truncatedRow">
         <span className="truncatedRowLabel">uuid</span>
-        <TruncatedText text={sampleUuid} pattern="uuid" enabled={soundEnabled} />
+        <TruncatedText text={sampleUuid} pattern="uuid" debug={soundEnabled} />
       </div>
       <div className="truncatedRow">
         <span className="truncatedRowLabel">email</span>
-        <TruncatedText text="joedemo@example.com" pattern="email" enabled={soundEnabled} />
+        <TruncatedText text="joedemo@example.com" pattern="email" debug={soundEnabled} />
       </div>
 
       <p className="truncatedSectionLabel">Copy on expand only</p>
@@ -30,7 +30,7 @@ export function TruncatedTextSlide({ soundEnabled }: TruncatedTextSlideProps) {
           text={sampleUuid}
           pattern="uuid"
           copyVisibility="expanded"
-          enabled={soundEnabled}
+          debug={soundEnabled}
         />
       </div>
       <div className="truncatedRow">
@@ -39,7 +39,7 @@ export function TruncatedTextSlide({ soundEnabled }: TruncatedTextSlideProps) {
           text="joedemo@example.com"
           pattern="email"
           copyVisibility="expanded"
-          enabled={soundEnabled}
+          debug={soundEnabled}
         />
       </div>
     </div>
