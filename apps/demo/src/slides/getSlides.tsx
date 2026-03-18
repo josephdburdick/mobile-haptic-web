@@ -1,4 +1,5 @@
 import type { Slide } from "./slideTypes"
+import { DrawerSelectSlide } from "./DrawerSelectSlide"
 import { DrawerSlide } from "./DrawerSlide"
 import { GoodbyeSlide } from "./GoodbyeSlide"
 import { HapticRadioSlide } from "./HapticRadioSlide"
@@ -39,6 +40,11 @@ export function getSlides(activeSlideId: string, soundEnabled: boolean): Slide[]
       id: "snap-drawer",
       title: "Snap Drawer",
       content: <DrawerSlide soundEnabled={soundEnabled} />,
+    },
+    {
+      id: "drawer-select",
+      title: "Drawer Select",
+      content: <DrawerSelectSlide soundEnabled={soundEnabled} />,
     },
     {
       id: "streaming-text",
