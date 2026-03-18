@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type CSSProperties, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { useHaptics } from "./use-haptics";
 
 export type SwipePosition = "left" | "center" | "right";
@@ -57,7 +57,7 @@ export function SwipeActions({
     }
   }, []);
 
-  const handleScroll = useCallback(() => {
+  const updatePosition = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
 
@@ -84,11 +84,32 @@ export function SwipeActions({
     }
   }, [trigger, hapticPreset, onReveal]);
 
+  const handleScroll = useCallback(() => {
+    updatePosition();
+  }, [updatePosition]);
+
+  const handlePointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      if (event.pointerType !== "mouse") {
+        updatePosition();
+      }
+    },
+    [updatePosition],
+  );
+
+  const handleTouchMove = useCallback(() => {
+    updatePosition();
+  }, [updatePosition]);
+
   return (
     <div
       ref={containerRef}
       className={className}
       onScroll={handleScroll}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerMove}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchMove}
       style={{ ...containerBaseStyle, ...style }}
     >
       <div style={{ ...actionSlotStyle, scrollSnapAlign: "start" }}>
