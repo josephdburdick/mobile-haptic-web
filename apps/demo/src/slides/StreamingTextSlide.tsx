@@ -42,7 +42,7 @@ function buildIOSStreamPattern(
     const gapFromPreviousPulse = pulseIndex === 0 ? time : time - previousTime
     return {
       duration: 8,
-      delay: pulseIndex === 0 ? gapFromPreviousPulse : Math.max(gapFromPreviousPulse - 8, 0),
+      delay: pulseIndex === 0 ? 0 : Math.max(gapFromPreviousPulse - 8, 0),
       intensity: 0.3,
     }
   })
@@ -127,7 +127,9 @@ export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSli
   return (
     <div className="stack">
       <p>
-        Simulated token stream with haptics aligned to streamed letters.
+        Simulated token stream with feedback aligned to streamed text. Android
+        pulses every few characters. iOS fires a haptic on play with audio
+        for the stream — timer-driven haptics aren't allowed by Safari.
       </p>
       <HapticStreamingText
         sourceText={SOURCE_TEXT}

@@ -56,8 +56,9 @@ export function DrawerSlide({ soundEnabled }: DrawerSlideProps) {
   return (
     <div className="stack">
       <p>
-        Use the button to open the Vaul drawer, then drag it on mobile to each
-        snap point and feel different haptic intensity.
+        Open the drawer and drag between snap points — haptic intensity
+        increases from Peek to Full. Works on both iOS and Android because
+        each snap fires from a user-gesture context.
       </p>
       <Drawer.Root
         snapPoints={[...SNAP_POINTS]}

@@ -30,8 +30,9 @@ export function SwipeActionsSlide({ soundEnabled }: SwipeActionsSlideProps) {
   return (
     <div className="stack">
       <p>
-        Swipe rows left or right to reveal actions. Haptic feedback fires at
-        each transition.
+        Swipe rows left or right to reveal actions. Android vibrates at each
+        snap point. iOS fires a haptic pulse on touch, with audio cues at
+        transitions — Safari restricts haptics to tap-driven events.
       </p>
 
       <div className="swipeList">

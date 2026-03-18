@@ -103,6 +103,10 @@ export function SwipeActions({
     updatePosition();
   }, [updatePosition]);
 
+  const handleTouchStart = useCallback(() => {
+    trigger("selection");
+  }, [trigger]);
+
   return (
     <div
       ref={containerRef}
@@ -112,6 +116,7 @@ export function SwipeActions({
       onPointerUp={handlePointerMove}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchMove}
+      onTouchStart={handleTouchStart}
       style={{ ...containerBaseStyle, ...style }}
     >
       <div style={{ ...actionSlotStyle, scrollSnapAlign: "start" }}>

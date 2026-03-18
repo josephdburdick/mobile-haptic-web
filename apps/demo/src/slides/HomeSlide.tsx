@@ -2,14 +2,14 @@ export function HomeSlide() {
   return (
     <div className="stack">
       <h1 className="heroTitle">
-        Haptic UI
+        Tactile UI
         <br />
-        Components
+        on the Mobile Web
       </h1>
       <p className="heroBody">
-        Swipe through this deck to explore tactile feedback patterns for modern
-        mobile web interfaces. Best experienced on a device that supports the
-        Vibration API.
+        Swipe through this deck to explore haptic and audio feedback patterns
+        for mobile web interfaces. Android gets full vibration; iOS delivers
+        tap-driven haptics with audio cues for continuous gestures.
       </p>
     </div>
   )

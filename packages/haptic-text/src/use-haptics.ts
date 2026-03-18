@@ -196,13 +196,12 @@ export function useHaptics(options?: UseHapticsOptions) {
 
       const token = runTokenRef.current;
       let startAt = 0;
-      let lastPulseAt = Number.NEGATIVE_INFINITY;
+      let lastPulseAt = 0;
 
-      const firstSegment = segments[0];
-      if (firstSegment.isOn) {
-        labelRef.current.click();
-        lastPulseAt = 0;
-      }
+      // Always click immediately to preserve user-gesture context on iOS Safari.
+      // Deferred clicks (rAF, setTimeout) lose gesture eligibility and the
+      // Taptic Engine silently ignores them.
+      labelRef.current.click();
 
       const tick = (timestamp: number) => {
         if (token !== runTokenRef.current) return;

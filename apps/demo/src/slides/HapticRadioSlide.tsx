@@ -6,9 +6,9 @@ export function HapticRadioSlide({ soundEnabled }: HapticRadioSlideProps) {
   return (
     <div className="stack">
       <p>
-        This curated set focuses on distinct haptic feels from{" "}
-        <code>web-haptics</code>. Enable the sound toggle (top-right) to hear
-        them on desktop.
+        Tap-triggered presets from <code>web-haptics</code> — haptics work on
+        both iOS and Android because each tap is a user gesture. Enable the
+        sound toggle (top-right) to hear them on desktop.
       </p>
       <HapticRadioGroup
         name="haptic-preset"
