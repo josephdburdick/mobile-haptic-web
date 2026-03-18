@@ -16,10 +16,12 @@ const SNAP_HAPTICS: Record<(typeof SNAP_POINTS)[number], string> = {
   0.85: "heavy",
 }
 
-export function DrawerSlide() {
+type DrawerSlideProps = { debug?: boolean }
+
+export function DrawerSlide({ debug }: DrawerSlideProps) {
   const [snap, setSnap] = useState<(typeof SNAP_POINTS)[number] | null>(SNAP_POINTS[1])
   const [open, setOpen] = useState(false)
-  const { trigger } = useWebHaptics()
+  const { trigger } = useWebHaptics({ debug })
   const prevSnapRef = useRef(snap)
   const dragSampleCountRef = useRef(0)
   const maxDragPercentageRef = useRef(0)

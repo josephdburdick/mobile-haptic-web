@@ -3,9 +3,10 @@ import { HapticStreamingText } from "@j0e/haptic-text/haptic-streaming-text"
 
 type StreamingTextSlideProps = {
   isVisible: boolean
+  debug?: boolean
 }
 
-export function StreamingTextSlide({ isVisible }: StreamingTextSlideProps) {
+export function StreamingTextSlide({ isVisible, debug }: StreamingTextSlideProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const charsPerTick = 1
   const intervalMs = 30
@@ -28,6 +29,7 @@ export function StreamingTextSlide({ isVisible }: StreamingTextSlideProps) {
         hapticEveryNChars={hapticEveryNChars}
         intervalMs={intervalMs}
         playing={isPlaying}
+        debug={debug}
       />
       <button type="button" className="streamToggle" onClick={toggle}>
         {isPlaying ? "Stop" : "Start"}

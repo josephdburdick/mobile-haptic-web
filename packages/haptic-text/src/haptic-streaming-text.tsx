@@ -10,6 +10,7 @@ export type HapticStreamingTextProps = {
   loop?: boolean;
   /** When false the streaming timer is paused. Defaults to false. */
   playing?: boolean;
+  debug?: boolean;
 };
 
 export function shouldTriggerHaptic(totalChars: number, hapticEveryNChars: number): boolean {
@@ -23,12 +24,13 @@ export function HapticStreamingText({
   hapticEveryNChars = 8,
   hapticPreset = "selection",
   loop = true,
-  playing = false
+  playing = false,
+  debug,
 }: HapticStreamingTextProps) {
   const [index, setIndex] = useState(0);
   const lastTriggerCharRef = useRef(0);
   const prevPlayingRef = useRef(playing);
-  const { trigger } = useWebHaptics();
+  const { trigger } = useWebHaptics({ debug });
 
   useEffect(() => {
     if (playing && !prevPlayingRef.current) {

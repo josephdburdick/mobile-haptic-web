@@ -456,6 +456,39 @@ code {
   padding: 0;
 }
 
+/* ---------- sound toggle ---------- */
+
+.soundToggle {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: hsla(222, 60%, 7%, 0.88);
+  backdrop-filter: blur(12px);
+  color: var(--muted);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.soundToggle:hover {
+  border-color: var(--muted);
+  color: var(--fg);
+}
+
+.soundToggle[data-active="true"] {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
 /* ---------- slide nav dots ---------- */
 
 .slideDots {
@@ -484,4 +517,140 @@ code {
 .slideDot[data-active="true"] {
   background: var(--fg);
   transform: scale(1.35);
+}
+
+/* ---------- truncated text rows ---------- */
+
+.truncatedRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.truncatedRow:last-child {
+  border-bottom: none;
+}
+
+.truncatedRowLabel {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  opacity: 0.7;
+  flex-shrink: 0;
+  min-width: 2.5rem;
+}
+
+.truncatedSectionLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin-top: 0.25rem;
+  margin-bottom: -0.5rem;
+}
+
+/* ---------- swipe actions ---------- */
+
+.swipeList {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.swipeRow {
+  border-bottom: 1px solid var(--border);
+  scrollbar-width: none;
+}
+
+.swipeRow::-webkit-scrollbar {
+  display: none;
+}
+
+.swipeRow:last-child {
+  border-bottom: none;
+}
+
+.swipeContent {
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.swipeContentLabel {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.swipeContentDetail {
+  font-size: 0.72rem;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.swipeAction {
+  padding: 0 1.5rem;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.swipeActionDelete {
+  background: hsl(0 72% 51% / 0.15);
+  color: hsl(0 72% 65%);
+}
+
+.swipeActionArchive {
+  background: hsl(142 71% 35% / 0.18);
+  color: hsl(142 76% 56%);
+}
+
+.swipeLog {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  background: hsl(222 60% 6%);
+  min-height: 2.5rem;
+  display: grid;
+  gap: 0.2rem;
+  align-content: start;
+}
+
+.swipeLogEmpty {
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.swipeLogEntry {
+  font-size: 0.72rem;
+  font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+  color: var(--muted);
+  animation: swipeLogFadeIn 200ms ease;
+}
+
+.swipeLogRow {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+@keyframes swipeLogFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

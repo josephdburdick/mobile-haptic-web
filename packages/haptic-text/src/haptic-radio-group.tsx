@@ -11,11 +11,12 @@ export type HapticRadioGroupProps = {
   name: string;
   options: HapticRadioOption[];
   defaultOptionId?: string;
+  debug?: boolean;
 };
 
-export function HapticRadioGroup({ name, options, defaultOptionId }: HapticRadioGroupProps) {
+export function HapticRadioGroup({ name, options, defaultOptionId, debug }: HapticRadioGroupProps) {
   const [selectedId, setSelectedId] = useState(defaultOptionId ?? options[0]?.id ?? "");
-  const { trigger } = useWebHaptics();
+  const { trigger } = useWebHaptics({ debug });
 
   return (
     <fieldset

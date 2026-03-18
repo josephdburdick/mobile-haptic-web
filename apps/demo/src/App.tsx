@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { QrShare } from "./components/QrShare"
 import { SlideDots } from "./components/SlideDots"
+import { SoundToggle } from "./components/SoundToggle"
 import { getSlides } from "./slides/getSlides"
 
 function getCurrentSlideHash(): string {
@@ -10,7 +11,8 @@ function getCurrentSlideHash(): string {
 export function App() {
   const railRef = useRef<HTMLDivElement | null>(null)
   const [activeSlideId, setActiveSlideId] = useState("home")
-  const slides = useMemo(() => getSlides(activeSlideId), [activeSlideId])
+  const [soundEnabled, setSoundEnabled] = useState(false)
+  const slides = useMemo(() => getSlides(activeSlideId, soundEnabled), [activeSlideId, soundEnabled])
   const logoSrc = `${import.meta.env.BASE_URL}j0e-logo--solid.svg`
 
   function scrollToSlide(slideId: string) {
@@ -94,6 +96,10 @@ export function App() {
         onDotClick={scrollToSlide}
       />
       <QrShare activeSlideId={activeSlideId} />
+      <SoundToggle
+        enabled={soundEnabled}
+        onToggle={() => setSoundEnabled((v) => !v)}
+      />
     </main>
   )
 }

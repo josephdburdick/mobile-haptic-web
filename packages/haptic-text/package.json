@@ -28,6 +28,11 @@
       "import": "./dist/haptic-snap-drawer.js",
       "require": "./dist/haptic-snap-drawer.cjs"
     },
+    "./swipe-actions": {
+      "types": "./dist/swipe-actions.d.ts",
+      "import": "./dist/swipe-actions.js",
+      "require": "./dist/swipe-actions.cjs"
+    },
     "./patterns": {
       "types": "./dist/patterns.d.ts",
       "import": "./dist/patterns.js",
@@ -39,7 +44,7 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "build": "tsup src/truncated-text.tsx src/haptic-streaming-text.tsx src/haptic-radio-group.tsx src/haptic-snap-drawer.tsx src/patterns.ts --format esm,cjs --dts --clean",
+    "build": "tsup src/truncated-text.tsx src/haptic-streaming-text.tsx src/haptic-radio-group.tsx src/haptic-snap-drawer.tsx src/swipe-actions.tsx src/patterns.ts --format esm,cjs --dts --clean",
     "lint": "tsc --noEmit",
     "test": "vitest run"
   },

@@ -7,23 +7,43 @@ export type TruncatedTextProps = {
   pattern?: TruncatePatternName;
   truncate?: (value: string) => string;
   className?: string;
-  copyButtonLabel?: string;
   enableCopy?: boolean;
+  /** "always" shows the copy icon at all times, "expanded" only when text is expanded */
+  copyVisibility?: "always" | "expanded";
   hapticPreset?: string | number | number[];
+  debug?: boolean;
 };
+
+function CopyIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
 
 export function TruncatedText({
   text,
   pattern,
   truncate,
   className,
-  copyButtonLabel = "Copy",
   enableCopy = true,
-  hapticPreset = "selection"
+  copyVisibility = "always",
+  hapticPreset = "selection",
+  debug,
 }: TruncatedTextProps) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { trigger } = useWebHaptics();
+  const { trigger } = useWebHaptics({ debug });
 
   const collapsedText = useMemo(() => {
     if (truncate) return truncate(text);
@@ -32,6 +52,7 @@ export function TruncatedText({
   }, [pattern, text, truncate]);
 
   const displayText = expanded ? text : collapsedText;
+  const isTruncated = collapsedText !== text;
 
   async function handleCopy(event: MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
@@ -44,12 +65,13 @@ export function TruncatedText({
   }
 
   function handleToggle() {
+    if (!isTruncated) return;
     setExpanded((current) => !current);
     trigger(hapticPreset);
   }
 
   return (
-    <div
+    <span
       className={className}
       onClick={handleToggle}
       onKeyDown={(event) => {
@@ -58,52 +80,50 @@ export function TruncatedText({
           handleToggle();
         }
       }}
-      role="button"
-      tabIndex={0}
-      aria-label="Toggle full text"
+      role={isTruncated ? "button" : undefined}
+      tabIndex={isTruncated ? 0 : undefined}
+      aria-label={isTruncated ? "Toggle full text" : undefined}
       style={{
-        padding: "0.85rem 1rem",
-        border: "1px solid var(--border, hsl(217.2 32.6% 17.5%))",
-        borderRadius: "8px",
-        background: "hsl(222 60% 6%)",
-        cursor: "pointer",
-        display: "flex",
+        display: "inline-flex",
         alignItems: "center",
-        gap: "0.65rem",
-        transition: "background 120ms ease"
+        gap: "0.35rem",
+        cursor: isTruncated ? "pointer" : "default",
       }}
     >
       <code
         style={{
-          flex: 1,
           fontSize: "clamp(0.78rem, 1.4vw, 0.92rem)",
           wordBreak: "break-all",
           whiteSpace: "pre-wrap",
           background: "none",
-          padding: 0
+          padding: 0,
         }}
       >
         {displayText}
       </code>
-      {expanded && enableCopy ? (
+      {enableCopy && (copyVisibility === "always" || expanded) ? (
         <button
           onClick={handleCopy}
           type="button"
+          aria-label={copied ? "Copied" : "Copy to clipboard"}
           style={{
             flexShrink: 0,
-            border: "1px solid var(--border, hsl(217.2 32.6% 17.5%))",
-            borderRadius: "6px",
-            padding: "0.2rem 0.55rem",
+            border: "none",
+            borderRadius: "4px",
+            padding: "0.25rem",
             background: "transparent",
-            color: "inherit",
+            color: copied ? "hsl(142 76% 56%)" : "currentColor",
             cursor: "pointer",
-            fontSize: "0.75rem",
-            fontFamily: "inherit"
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            opacity: copied ? 1 : 0.5,
+            transition: "opacity 120ms ease, color 120ms ease",
           }}
         >
-          {copied ? "Copied" : copyButtonLabel}
+          {copied ? <CheckIcon /> : <CopyIcon />}
         </button>
       ) : null}
-    </div>
+    </span>
   );
 }

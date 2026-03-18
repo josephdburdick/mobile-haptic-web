@@ -15,7 +15,10 @@ export function truncateByPattern(text: string, pattern: TruncatePatternName): s
       return text;
     }
     const segments = text.split("-");
-    return segments[segments.length - 1] ?? text;
+    const first = segments[0];
+    const last = segments[segments.length - 1];
+    if (!first || !last) return text;
+    return `${first}…${last.slice(-6)}`;
   }
 
   if (pattern === "email") {
@@ -29,7 +32,7 @@ export function truncateByPattern(text: string, pattern: TruncatePatternName): s
     }
 
     const visible = local.slice(0, 2);
-    return `${visible}${"*".repeat(Math.max(local.length - 2, 1))}@${domain}`;
+    return `${visible}…@${domain}`;
   }
 
   return text;
