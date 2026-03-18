@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { Drawer } from "vaul"
-import { useWebHaptics } from "web-haptics/react"
+import { useHaptics } from "@j0e/haptic-text/use-haptics"
 
 const SNAP_POINTS = [0.25, 0.5, 0.85] as const
 
@@ -21,7 +21,7 @@ type DrawerSlideProps = { debug?: boolean }
 export function DrawerSlide({ debug }: DrawerSlideProps) {
   const [snap, setSnap] = useState<(typeof SNAP_POINTS)[number] | null>(SNAP_POINTS[1])
   const [open, setOpen] = useState(false)
-  const { trigger } = useWebHaptics({ debug })
+  const { trigger } = useHaptics({ debug })
   const prevSnapRef = useRef(snap)
   const dragSampleCountRef = useRef(0)
   const maxDragPercentageRef = useRef(0)

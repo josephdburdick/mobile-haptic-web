@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useWebHaptics } from "web-haptics/react";
+import { useHaptics } from "./use-haptics";
 
 export type HapticStreamingTextProps = {
   sourceText: string;
@@ -30,7 +30,7 @@ export function HapticStreamingText({
   const [index, setIndex] = useState(0);
   const lastTriggerCharRef = useRef(0);
   const prevPlayingRef = useRef(playing);
-  const { trigger } = useWebHaptics({ debug });
+  const { trigger } = useHaptics({ debug });
 
   useEffect(() => {
     if (playing && !prevPlayingRef.current) {

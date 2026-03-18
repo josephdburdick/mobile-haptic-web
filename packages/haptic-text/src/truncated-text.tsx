@@ -1,5 +1,5 @@
 import { useMemo, useState, type MouseEvent } from "react";
-import { useWebHaptics } from "web-haptics/react";
+import { useHaptics } from "./use-haptics";
 import { truncateByPattern, type TruncatePatternName } from "./patterns";
 
 export type TruncatedTextProps = {
@@ -43,7 +43,7 @@ export function TruncatedText({
 }: TruncatedTextProps) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { trigger } = useWebHaptics({ debug });
+  const { trigger } = useHaptics({ debug });
 
   const collapsedText = useMemo(() => {
     if (truncate) return truncate(text);

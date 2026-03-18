@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useWebHaptics } from "web-haptics/react";
+import { useHaptics } from "./use-haptics";
 
 type DrawerSnap = {
   id: string;
@@ -20,7 +20,7 @@ const defaultSnaps: DrawerSnap[] = [
 
 export function HapticSnapDrawer({ snaps = defaultSnaps }: HapticSnapDrawerProps) {
   const [activeId, setActiveId] = useState(snaps[0]?.id ?? "");
-  const { trigger } = useWebHaptics();
+  const { trigger } = useHaptics();
 
   const current = snaps.find((item) => item.id === activeId) ?? snaps[0];
 
