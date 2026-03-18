@@ -16,7 +16,8 @@ export type SwipeActionsProps = {
 
 const containerBaseStyle: CSSProperties & { containerType?: string } = {
   display: "grid",
-  gridTemplateColumns: "auto 1fr auto",
+  // Keep the center track equal to one viewport width so side actions stay hidden until swipe.
+  gridTemplateColumns: "auto 100% auto",
   overflowX: "auto",
   scrollSnapType: "x mandatory",
   containerType: "inline-size",

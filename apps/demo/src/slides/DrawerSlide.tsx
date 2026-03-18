@@ -16,15 +16,14 @@ const SNAP_HAPTICS: Record<(typeof SNAP_POINTS)[number], string> = {
   0.85: "heavy",
 }
 
-type DrawerSlideProps = { debug?: boolean }
+type DrawerSlideProps = { soundEnabled?: boolean }
 
-export function DrawerSlide({ debug }: DrawerSlideProps) {
+export function DrawerSlide({ soundEnabled }: DrawerSlideProps) {
   const [snap, setSnap] = useState<(typeof SNAP_POINTS)[number] | null>(SNAP_POINTS[1])
   const [open, setOpen] = useState(false)
-  const { trigger } = useHaptics({ debug })
+  const { trigger } = useHaptics({ debug: soundEnabled })
   const prevSnapRef = useRef(snap)
-  const dragSampleCountRef = useRef(0)
-  const maxDragPercentageRef = useRef(0)
+  const contentRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (snap !== prevSnapRef.current && typeof snap === "number") {
@@ -66,31 +65,16 @@ export function DrawerSlide({ debug }: DrawerSlideProps) {
         setActiveSnapPoint={setVaulSnapPoint}
         open={open}
         onOpenChange={(nextOpen) => {
+          // Move focus off the trigger before Vaul applies modal aria-hidden.
+          if (nextOpen) {
+            const activeElement = document.activeElement
+            if (activeElement instanceof HTMLElement) {
+              activeElement.blur()
+            }
+          }
           setOpen(nextOpen)
-          dragSampleCountRef.current = 0
-          maxDragPercentageRef.current = 0
         }}
-        onDrag={(_, percentageDragged) => {
-          if (!open) return
-          dragSampleCountRef.current += 1
-          if (percentageDragged > maxDragPercentageRef.current) {
-            maxDragPercentageRef.current = percentageDragged
-          }
-        }}
-        onRelease={(_, openAfterRelease) => {
-          const sampleCount = dragSampleCountRef.current
-          const maxDragged = maxDragPercentageRef.current
-          const shouldForceClose =
-            open && openAfterRelease && sampleCount >= 6 && maxDragged >= 0.98
-
-          if (shouldForceClose) {
-            setOpen(false)
-          }
-
-          dragSampleCountRef.current = 0
-          maxDragPercentageRef.current = 0
-        }}
-        closeThreshold={0.08}
+        closeThreshold={0.28}
         dismissible
         modal
       >
@@ -104,14 +88,22 @@ export function DrawerSlide({ debug }: DrawerSlideProps) {
         </div>
         <Drawer.Portal>
           <Drawer.Overlay className="drawerOverlay" />
-          <Drawer.Content className="drawerContent">
+          <Drawer.Content
+            className="drawerContent"
+            ref={contentRef}
+            tabIndex={-1}
+            onOpenAutoFocus={(event) => {
+              event.preventDefault()
+              contentRef.current?.focus()
+            }}
+          >
             <Drawer.Handle className="drawerHandle" />
             <div className="drawerBody">
               <Drawer.Title className="drawerTitle">Haptic Drawer</Drawer.Title>
-              <p className="drawerDescription">
+              <Drawer.Description className="drawerDescription">
                 Drag this drawer between snap points. Haptic strength increases as
                 you move from Peek to Full.
-              </p>
+              </Drawer.Description>
               <div className="drawerSnaps">
                 {SNAP_POINTS.map((pt) => (
                   <button

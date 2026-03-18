@@ -2,9 +2,9 @@ import { TruncatedText } from "@j0e/haptic-text"
 
 const sampleUuid = "123e4567-e89b-12d3-a456-426614174000"
 
-type TruncatedTextSlideProps = { debug?: boolean }
+type TruncatedTextSlideProps = { soundEnabled?: boolean }
 
-export function TruncatedTextSlide({ debug }: TruncatedTextSlideProps) {
+export function TruncatedTextSlide({ soundEnabled }: TruncatedTextSlideProps) {
   return (
     <div className="stack">
       <p>
@@ -16,11 +16,11 @@ export function TruncatedTextSlide({ debug }: TruncatedTextSlideProps) {
       <p className="truncatedSectionLabel">Copy always visible</p>
       <div className="truncatedRow">
         <span className="truncatedRowLabel">uuid</span>
-        <TruncatedText text={sampleUuid} pattern="uuid" debug={debug} />
+        <TruncatedText text={sampleUuid} pattern="uuid" debug={soundEnabled} />
       </div>
       <div className="truncatedRow">
         <span className="truncatedRowLabel">email</span>
-        <TruncatedText text="joedemo@example.com" pattern="email" debug={debug} />
+        <TruncatedText text="joedemo@example.com" pattern="email" debug={soundEnabled} />
       </div>
 
       <p className="truncatedSectionLabel">Copy on expand only</p>
@@ -30,7 +30,7 @@ export function TruncatedTextSlide({ debug }: TruncatedTextSlideProps) {
           text={sampleUuid}
           pattern="uuid"
           copyVisibility="expanded"
-          debug={debug}
+          debug={soundEnabled}
         />
       </div>
       <div className="truncatedRow">
@@ -39,7 +39,7 @@ export function TruncatedTextSlide({ debug }: TruncatedTextSlideProps) {
           text="joedemo@example.com"
           pattern="email"
           copyVisibility="expanded"
-          debug={debug}
+          debug={soundEnabled}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { SwipeActions, type SwipePosition } from "@j0e/haptic-text/swipe-actions"
 
 const POSITION_LABELS: Record<SwipePosition, string> = {
@@ -15,15 +15,16 @@ const ROWS = [
   { label: "New comment on your post", detail: "5 min ago" },
 ]
 
-type SwipeActionsSlideProps = { debug?: boolean }
+type SwipeActionsSlideProps = { soundEnabled?: boolean }
 
-export function SwipeActionsSlide({ debug }: SwipeActionsSlideProps) {
+export function SwipeActionsSlide({ soundEnabled }: SwipeActionsSlideProps) {
   const [log, setLog] = useState<LogEntry[]>([])
-  const [nextId, setNextId] = useState(0)
+  const nextIdRef = useRef(0)
 
   function addLog(row: string, position: SwipePosition) {
-    setLog((prev) => [{ id: nextId, row, message: POSITION_LABELS[position] }, ...prev].slice(0, 6))
-    setNextId((n) => n + 1)
+    const id = nextIdRef.current
+    nextIdRef.current += 1
+    setLog((prev) => [{ id, row, message: POSITION_LABELS[position] }, ...prev].slice(0, 6))
   }
 
   return (
@@ -57,7 +58,7 @@ export function SwipeActionsSlide({ debug }: SwipeActionsSlideProps) {
               </button>
             }
             onReveal={(pos) => addLog(row.label, pos)}
-            debug={debug}
+            debug={soundEnabled}
           >
             <div className="swipeContent">
               <span className="swipeContentLabel">{row.label}</span>

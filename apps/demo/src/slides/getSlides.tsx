@@ -16,34 +16,34 @@ export function getSlides(activeSlideId: string, soundEnabled: boolean): Slide[]
       content: <HomeSlide />,
     },
     {
-      id: "truncated-text",
-      title: "TruncatedText",
-      content: <TruncatedTextSlide debug={soundEnabled} />,
-    },
-    {
-      id: "haptic-radio",
-      title: "Radio Presets",
-      content: <HapticRadioSlide debug={soundEnabled} />,
-    },
-    {
-      id: "swipe-actions",
-      title: "Swipe Actions",
-      content: <SwipeActionsSlide debug={soundEnabled} />,
-    },
-    {
-      id: "snap-drawer",
-      title: "Snap Drawer",
-      content: <DrawerSlide debug={soundEnabled} />,
-    },
-    {
       id: "orientation",
       title: "Orientation",
       content: <OrientationSlide />,
     },
     {
+      id: "truncated-text",
+      title: "TruncatedText",
+      content: <TruncatedTextSlide soundEnabled={soundEnabled} />,
+    },
+    {
+      id: "haptic-radio",
+      title: "Radio Presets",
+      content: <HapticRadioSlide soundEnabled={soundEnabled} />,
+    },
+    {
+      id: "swipe-actions",
+      title: "Swipe Actions",
+      content: <SwipeActionsSlide soundEnabled={soundEnabled} />,
+    },
+    {
+      id: "snap-drawer",
+      title: "Snap Drawer",
+      content: <DrawerSlide soundEnabled={soundEnabled} />,
+    },
+    {
       id: "streaming-text",
       title: "AI Streaming Text",
-      content: <StreamingTextSlide isVisible={activeSlideId === "streaming-text"} debug={soundEnabled} />,
+      content: <StreamingTextSlide isVisible={activeSlideId === "streaming-text"} soundEnabled={soundEnabled} />,
     },
     {
       id: "goodbye",

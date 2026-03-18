@@ -1,24 +1,22 @@
 import { HapticRadioGroup } from "@j0e/haptic-text/haptic-radio-group"
 
-type HapticRadioSlideProps = { debug?: boolean }
+type HapticRadioSlideProps = { soundEnabled?: boolean }
 
-export function HapticRadioSlide({ debug }: HapticRadioSlideProps) {
+export function HapticRadioSlide({ soundEnabled }: HapticRadioSlideProps) {
   return (
     <div className="stack">
       <p>
-        Each option fires a different haptic preset from{" "}
+        This curated set focuses on distinct haptic feels from{" "}
         <code>web-haptics</code>. Enable the sound toggle (top-right) to hear
         them on desktop.
       </p>
       <HapticRadioGroup
         name="haptic-preset"
-        debug={debug}
+        debug={soundEnabled}
         options={[
-          { id: "selection", label: "Selection (8 ms)", hapticPreset: "selection" },
-          { id: "light", label: "Light (15 ms)", hapticPreset: "light" },
+          { id: "selection", label: "Tap (Selection, 8 ms)", hapticPreset: "selection" },
           { id: "medium", label: "Medium (25 ms)", hapticPreset: "medium" },
           { id: "heavy", label: "Heavy (35 ms)", hapticPreset: "heavy" },
-          { id: "soft", label: "Soft (40 ms)", hapticPreset: "soft" },
           { id: "rigid", label: "Rigid (10 ms)", hapticPreset: "rigid" },
           { id: "success", label: "Success (2 pulses)", hapticPreset: "success" },
           { id: "warning", label: "Warning (2 pulses)", hapticPreset: "warning" },
