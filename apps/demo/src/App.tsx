@@ -11,7 +11,7 @@ function getCurrentSlideHash(): string {
 export function App() {
   const railRef = useRef<HTMLDivElement | null>(null)
   const [activeSlideId, setActiveSlideId] = useState("home")
-  const [soundEnabled, setSoundEnabled] = useState(false)
+  const [soundEnabled, setSoundEnabled] = useState(true)
   const slides = useMemo(() => getSlides(activeSlideId, soundEnabled), [activeSlideId, soundEnabled])
   const logoSrc = `${import.meta.env.BASE_URL}j0e-logo--solid.svg`
 

@@ -139,13 +139,15 @@ export function useHaptics(options?: UseHapticsOptions) {
   const webHaptics = useWebHaptics(options);
   const isIOS = useMemo(() => isIOSDevice(), []);
   const labelRef = useRef<HTMLLabelElement | null>(null);
-  const timeoutIdsRef = useRef<number[]>([]);
+  const rafIdRef = useRef<number | null>(null);
+  const runTokenRef = useRef(0);
 
   const clearPendingFallback = useCallback(() => {
-    for (const id of timeoutIdsRef.current) {
-      window.clearTimeout(id);
+    if (rafIdRef.current !== null) {
+      window.cancelAnimationFrame(rafIdRef.current);
+      rafIdRef.current = null;
     }
-    timeoutIdsRef.current = [];
+    runTokenRef.current += 1;
   }, []);
 
   useEffect(() => {
@@ -167,28 +169,62 @@ export function useHaptics(options?: UseHapticsOptions) {
 
       clearPendingFallback();
       const baseIntensity = clampIntensity(opts?.intensity ?? FALLBACK_INTENSITY);
-      let cursorMs = 0;
+      const segments: Array<{ end: number; isOn: boolean; intensity: number }> = [];
+      let totalMs = 0;
 
       for (const step of steps) {
         const delay = normalizeDelay(step.delay);
-        if (delay > 0) cursorMs += delay;
+        if (delay > 0) {
+          totalMs += delay;
+          segments.push({ end: totalMs, isOn: false, intensity: 0 });
+        }
 
         const duration = normalizeDuration(step.duration);
         if (duration === 0) continue;
 
-        const intensity = clampIntensity(step.intensity ?? baseIntensity);
-        const intervalMs = pulseInterval(intensity);
+        totalMs += duration;
+        segments.push({
+          end: totalMs,
+          isOn: true,
+          intensity: clampIntensity(step.intensity ?? baseIntensity),
+        });
+      }
 
-        for (let elapsed = 0; elapsed < duration; elapsed += intervalMs) {
-          const runAt = cursorMs + elapsed;
-          const timeoutId = window.setTimeout(() => {
-            labelRef.current?.click();
-          }, runAt);
-          timeoutIdsRef.current.push(timeoutId);
+      if (segments.length === 0 || totalMs === 0) return;
+
+      const token = runTokenRef.current;
+      let startAt = 0;
+      let lastPulseAt = Number.NEGATIVE_INFINITY;
+
+      const firstSegment = segments[0];
+      if (firstSegment.isOn) {
+        labelRef.current.click();
+        lastPulseAt = 0;
+      }
+
+      const tick = (timestamp: number) => {
+        if (token !== runTokenRef.current) return;
+        if (startAt === 0) startAt = timestamp;
+
+        const elapsed = timestamp - startAt;
+        if (elapsed >= totalMs) {
+          rafIdRef.current = null;
+          return;
         }
 
-        cursorMs += duration;
-      }
+        const activeSegment = segments.find((segment) => elapsed < segment.end);
+        if (activeSegment?.isOn) {
+          const intervalMs = pulseInterval(activeSegment.intensity);
+          if (elapsed - lastPulseAt >= intervalMs) {
+            labelRef.current?.click();
+            lastPulseAt = elapsed;
+          }
+        }
+
+        rafIdRef.current = window.requestAnimationFrame(tick);
+      };
+
+      rafIdRef.current = window.requestAnimationFrame(tick);
     },
     [clearPendingFallback],
   );
