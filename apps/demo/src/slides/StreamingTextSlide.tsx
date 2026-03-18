@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { HapticStreamingText } from "@j0e/haptic-text/haptic-streaming-text"
 import { useHaptics } from "@j0e/haptic-text/use-haptics"
-import type { HapticInput } from "web-haptics"
 
 const SOURCE_TEXT =
   "We can add tactile rhythm to live AI output so updates feel intentional instead of noisy. This component throttles haptic triggers to avoid fatigue while still reinforcing each burst of new content."
@@ -19,44 +18,16 @@ function isIOSDevice() {
   )
 }
 
-function buildIOSStreamPattern(
-  sourceLength: number,
-  charsPerTick: number,
-  hapticEveryNChars: number,
-  intervalMs: number,
-): HapticInput {
-  const pulseTimes: number[] = []
-  let tick = 0
-  let index = 0
-
-  while (index < sourceLength) {
-    tick += 1
-    index = Math.min(index + charsPerTick, sourceLength)
-    if (index > 0 && index % hapticEveryNChars === 0) {
-      pulseTimes.push(tick * intervalMs)
-    }
-  }
-
-  return pulseTimes.map((time, pulseIndex) => {
-    const previousTime = pulseTimes[pulseIndex - 1] ?? 0
-    const gapFromPreviousPulse = pulseIndex === 0 ? time : time - previousTime
-    return {
-      duration: 8,
-      delay: pulseIndex === 0 ? gapFromPreviousPulse : Math.max(gapFromPreviousPulse - 8, 0),
-      intensity: 0.3,
-    }
-  })
-}
-
 export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSlideProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const isIOS = isIOSDevice()
   const charsPerTick = isIOS ? 2 : 1
   const intervalMs = isIOS ? 60 : 30
-  // iOS can drop feedback if triggers are fired too quickly from timer-driven updates.
+  // iOS can drop feedback when updates fire too quickly.
   const hapticEveryNChars = isIOS ? 4 : 1
-  const { trigger, cancel } = useHaptics({ debug: soundEnabled })
+  const { trigger, cancel } = useHaptics({ enabled: soundEnabled })
   const stopTimeoutRef = useRef<number | null>(null)
+  const lastHapticCharRef = useRef(0)
   const totalStreamMs = useMemo(
     () => Math.ceil(SOURCE_TEXT.length / charsPerTick) * intervalMs,
     [charsPerTick, intervalMs],
@@ -74,6 +45,7 @@ export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSli
       setIsPlaying(false)
       clearStopTimeout()
       cancel()
+      lastHapticCharRef.current = 0
     }
   }, [cancel, clearStopTimeout, isVisible])
 
@@ -81,29 +53,31 @@ export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSli
     return () => {
       clearStopTimeout()
       cancel()
+      lastHapticCharRef.current = 0
     }
   }, [cancel, clearStopTimeout])
+
+  const handleStreamChange = useCallback(
+    (_visibleText: string, index: number) => {
+      if (index <= 0) return
+      if (index - lastHapticCharRef.current < hapticEveryNChars) return
+      trigger("selection")
+      lastHapticCharRef.current = index
+    },
+    [hapticEveryNChars, trigger],
+  )
 
   const toggle = useCallback(() => {
     if (isPlaying) {
       setIsPlaying(false)
       clearStopTimeout()
       cancel()
+      lastHapticCharRef.current = 0
       return
     }
 
+    lastHapticCharRef.current = 0
     if (isIOS) {
-      const pattern = buildIOSStreamPattern(
-        SOURCE_TEXT.length,
-        charsPerTick,
-        hapticEveryNChars,
-        intervalMs,
-      )
-
-      if (Array.isArray(pattern) && pattern.length > 0) {
-        trigger(pattern)
-      }
-
       clearStopTimeout()
       stopTimeoutRef.current = window.setTimeout(() => {
         setIsPlaying(false)
@@ -116,12 +90,10 @@ export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSli
     cancel,
     charsPerTick,
     clearStopTimeout,
-    hapticEveryNChars,
     intervalMs,
     isIOS,
     isPlaying,
     totalStreamMs,
-    trigger,
   ])
 
   return (
@@ -132,11 +104,12 @@ export function StreamingTextSlide({ isVisible, soundEnabled }: StreamingTextSli
       <HapticStreamingText
         sourceText={SOURCE_TEXT}
         charsPerTick={charsPerTick}
-        hapticEveryNChars={isIOS ? Number.MAX_SAFE_INTEGER : hapticEveryNChars}
+        hapticEveryNChars={Number.MAX_SAFE_INTEGER}
         intervalMs={intervalMs}
         playing={isPlaying}
         loop={!isIOS}
-        debug={soundEnabled}
+        enabled={soundEnabled}
+        onChange={handleStreamChange}
       />
       <button type="button" className="streamToggle" onClick={toggle}>
         {isPlaying ? "Stop" : "Start"}

@@ -10,6 +10,10 @@ export type HapticStreamingTextProps = {
   loop?: boolean;
   /** When false the streaming timer is paused. Defaults to false. */
   playing?: boolean;
+  /** Controls whether haptic effects are emitted. Defaults to true. */
+  enabled?: boolean;
+  /** Called whenever visible text changes during playback. */
+  onChange?: (visibleText: string, index: number) => void;
   debug?: boolean;
 };
 
@@ -25,12 +29,14 @@ export function HapticStreamingText({
   hapticPreset = "selection",
   loop = true,
   playing = false,
+  enabled = true,
+  onChange,
   debug,
 }: HapticStreamingTextProps) {
   const [index, setIndex] = useState(0);
   const lastTriggerCharRef = useRef(0);
   const prevPlayingRef = useRef(playing);
-  const { trigger } = useHaptics({ debug });
+  const { trigger } = useHaptics({ enabled, debug });
 
   useEffect(() => {
     if (playing && !prevPlayingRef.current) {
@@ -68,6 +74,10 @@ export function HapticStreamingText({
   }, [hapticEveryNChars, hapticPreset, index, trigger]);
 
   const visibleText = useMemo(() => sourceText.slice(0, index), [index, sourceText]);
+
+  useEffect(() => {
+    onChange?.(visibleText, index);
+  }, [index, onChange, visibleText]);
 
   return (
     <div

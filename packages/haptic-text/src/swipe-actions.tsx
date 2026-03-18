@@ -9,6 +9,7 @@ export type SwipeActionsProps = {
   rightAction?: ReactNode;
   onReveal?: (position: SwipePosition) => void;
   hapticPreset?: string | number | number[];
+  enabled?: boolean;
   className?: string;
   style?: CSSProperties;
   debug?: boolean;
@@ -38,13 +39,14 @@ export function SwipeActions({
   rightAction,
   onReveal,
   hapticPreset = "medium",
+  enabled = true,
   className,
   style,
   debug,
 }: SwipeActionsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const positionRef = useRef<SwipePosition>("center");
-  const { trigger } = useHaptics({ debug });
+  const { trigger } = useHaptics({ enabled, debug });
 
   useEffect(() => {
     const container = containerRef.current;

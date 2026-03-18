@@ -58,7 +58,7 @@ export function SwipeActionsSlide({ soundEnabled }: SwipeActionsSlideProps) {
               </button>
             }
             onReveal={(pos) => addLog(row.label, pos)}
-            debug={soundEnabled}
+            enabled={soundEnabled}
           >
             <div className="swipeContent">
               <span className="swipeContentLabel">{row.label}</span>

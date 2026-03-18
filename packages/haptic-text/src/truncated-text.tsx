@@ -11,6 +11,7 @@ export type TruncatedTextProps = {
   /** "always" shows the copy icon at all times, "expanded" only when text is expanded */
   copyVisibility?: "always" | "expanded";
   hapticPreset?: string | number | number[];
+  enabled?: boolean;
   debug?: boolean;
 };
 
@@ -39,11 +40,12 @@ export function TruncatedText({
   enableCopy = true,
   copyVisibility = "always",
   hapticPreset = "selection",
+  enabled = true,
   debug,
 }: TruncatedTextProps) {
   const [expanded, setExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { trigger } = useHaptics({ debug });
+  const { trigger } = useHaptics({ enabled, debug });
 
   const collapsedText = useMemo(() => {
     if (truncate) return truncate(text);

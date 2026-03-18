@@ -21,7 +21,7 @@ type DrawerSlideProps = { soundEnabled?: boolean }
 export function DrawerSlide({ soundEnabled }: DrawerSlideProps) {
   const [snap, setSnap] = useState<(typeof SNAP_POINTS)[number] | null>(SNAP_POINTS[1])
   const [open, setOpen] = useState(false)
-  const { trigger } = useHaptics({ debug: soundEnabled })
+  const { trigger } = useHaptics({ enabled: soundEnabled })
   const prevSnapRef = useRef(snap)
   const contentRef = useRef<HTMLDivElement | null>(null)
 

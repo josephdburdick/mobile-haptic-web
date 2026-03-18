@@ -12,7 +12,7 @@ export function HapticRadioSlide({ soundEnabled }: HapticRadioSlideProps) {
       </p>
       <HapticRadioGroup
         name="haptic-preset"
-        debug={soundEnabled}
+        enabled={soundEnabled}
         options={[
           { id: "selection", label: "Tap (Selection, 8 ms)", hapticPreset: "selection" },
           { id: "medium", label: "Medium (25 ms)", hapticPreset: "medium" },

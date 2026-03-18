@@ -10,6 +10,7 @@ type DrawerSnap = {
 
 export type HapticSnapDrawerProps = {
   snaps?: DrawerSnap[];
+  enabled?: boolean;
 };
 
 const defaultSnaps: DrawerSnap[] = [
@@ -18,9 +19,12 @@ const defaultSnaps: DrawerSnap[] = [
   { id: "full", label: "Full", heightPercent: 82, hapticPreset: "rigid" }
 ];
 
-export function HapticSnapDrawer({ snaps = defaultSnaps }: HapticSnapDrawerProps) {
+export function HapticSnapDrawer({
+  snaps = defaultSnaps,
+  enabled = true,
+}: HapticSnapDrawerProps) {
   const [activeId, setActiveId] = useState(snaps[0]?.id ?? "");
-  const { trigger } = useHaptics();
+  const { trigger } = useHaptics({ enabled });
 
   const current = snaps.find((item) => item.id === activeId) ?? snaps[0];
 

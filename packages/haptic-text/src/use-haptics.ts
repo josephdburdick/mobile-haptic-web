@@ -132,12 +132,14 @@ function releaseHapticSwitch() {
 }
 
 export type UseHapticsOptions = {
+  enabled?: boolean;
   debug?: boolean;
 };
 
 export function useHaptics(options?: UseHapticsOptions) {
   const webHaptics = useWebHaptics(options);
   const isIOS = useMemo(() => isIOSDevice(), []);
+  const isEnabled = options?.enabled ?? true;
   const labelRef = useRef<HTMLLabelElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const runTokenRef = useRef(0);
@@ -231,6 +233,8 @@ export function useHaptics(options?: UseHapticsOptions) {
 
   const trigger = useCallback(
     (preset?: HapticInput, opts?: TriggerOptions) => {
+      if (!isEnabled) return;
+
       if (isIOS && labelRef.current) {
         runIOSPattern(preset, opts);
       }
@@ -239,15 +243,16 @@ export function useHaptics(options?: UseHapticsOptions) {
         webHaptics.trigger(preset, opts);
       }
     },
-    [isIOS, options?.debug, runIOSPattern, webHaptics],
+    [isEnabled, isIOS, options?.debug, runIOSPattern, webHaptics],
   );
 
   const cancel = useCallback(() => {
     clearPendingFallback();
+    if (!isEnabled) return;
     if (!isIOS || options?.debug) {
       webHaptics.cancel();
     }
-  }, [clearPendingFallback, isIOS, options?.debug, webHaptics]);
+  }, [clearPendingFallback, isEnabled, isIOS, options?.debug, webHaptics]);
 
   return {
     trigger,
