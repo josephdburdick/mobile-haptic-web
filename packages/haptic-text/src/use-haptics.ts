@@ -7,6 +7,24 @@ const MIN_PULSE_INTERVAL_MS = 16;
 const MAX_PULSE_INTERVAL_OFFSET_MS = 184;
 const FALLBACK_INTENSITY = 0.5;
 
+/**
+ * Browsers block navigator.vibrate() and AudioContext until the user has
+ * interacted with the page.  We track the first gesture globally so the
+ * haptics layer never fires before Chrome's activation gate lifts.
+ */
+let userHasGestured = false;
+
+function onFirstGesture() {
+  userHasGestured = true;
+  document.removeEventListener("pointerdown", onFirstGesture, true);
+  document.removeEventListener("keydown", onFirstGesture, true);
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("pointerdown", onFirstGesture, true);
+  document.addEventListener("keydown", onFirstGesture, true);
+}
+
 type VibrationStep = {
   duration: number;
   intensity?: number;
@@ -140,6 +158,7 @@ export function useHaptics(options?: UseHapticsOptions) {
   const webHaptics = useWebHaptics(options);
   const isIOS = useMemo(() => isIOSDevice(), []);
   const isEnabled = options?.enabled ?? true;
+  const debug = options?.debug ?? false;
   const labelRef = useRef<HTMLLabelElement | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const runTokenRef = useRef(0);
@@ -230,6 +249,9 @@ export function useHaptics(options?: UseHapticsOptions) {
     [clearPendingFallback],
   );
 
+  const webTrigger = webHaptics.trigger;
+  const webCancel = webHaptics.cancel;
+
   const trigger = useCallback(
     (preset?: HapticInput, opts?: TriggerOptions) => {
       if (!isEnabled) return;
@@ -238,20 +260,20 @@ export function useHaptics(options?: UseHapticsOptions) {
         runIOSPattern(preset, opts);
       }
 
-      if (!isIOS || options?.debug) {
-        webHaptics.trigger(preset, opts);
+      if ((!isIOS || debug) && userHasGestured) {
+        webTrigger(preset, opts);
       }
     },
-    [isEnabled, isIOS, options?.debug, runIOSPattern, webHaptics],
+    [isEnabled, isIOS, debug, runIOSPattern, webTrigger],
   );
 
   const cancel = useCallback(() => {
     clearPendingFallback();
     if (!isEnabled) return;
-    if (!isIOS || options?.debug) {
-      webHaptics.cancel();
+    if ((!isIOS || debug) && userHasGestured) {
+      webCancel();
     }
-  }, [clearPendingFallback, isEnabled, isIOS, options?.debug, webHaptics]);
+  }, [clearPendingFallback, isEnabled, isIOS, debug, webCancel]);
 
   return {
     trigger,

@@ -825,7 +825,7 @@ code {
   border: none;
   background: transparent;
   color: var(--fg);
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-family: inherit;
   outline: none;
 }
