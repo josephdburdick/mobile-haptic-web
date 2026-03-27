@@ -12,7 +12,8 @@ export type SwipeActionsProps = {
   initialSnap?: SwipePosition;
   /**
    * When true, briefly scrolls to reveal the left action and back to center on a loop
-   * until the user touches the row. Suppresses onReveal/haptics during the animation.
+   * until the user performs a real swipe gesture. Suppresses onReveal/haptics during
+   * the animation.
    */
   peekHintUntilInteraction?: boolean;
   hapticPreset?: string | number | number[];
@@ -90,6 +91,36 @@ export function SwipeActions({
 
     let cancelled = false;
     let generation = 0;
+    let wheelLogCount = 0;
+    let scrollLogCount = 0;
+    let cycleLogCount = 0;
+    let debugId = 0;
+
+    const emitDebug = (
+      hypothesisId: "H1" | "H2" | "H3" | "H4" | "H5",
+      location: string,
+      message: string,
+      data: Record<string, unknown>,
+    ) => {
+      debugId += 1;
+      fetch("http://127.0.0.1:7375/ingest/681f4d44-69f4-4fad-b542-31d3d1a8a36b", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "54278c",
+        },
+        body: JSON.stringify({
+          sessionId: "54278c",
+          runId: "pre-fix",
+          hypothesisId,
+          id: `swipe-actions-${Date.now()}-${debugId}`,
+          location,
+          message,
+          data,
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+    };
 
     const syncPositionFromScroll = () => {
       const scrollCenter = container.scrollWidth / 2;
@@ -106,36 +137,149 @@ export function SwipeActions({
       }
     };
 
-    const dismiss = () => {
+    const dismiss = (reason: "wheel" | "gesture-scroll") => {
       if (cancelled) return;
+      // #region agent log
+      emitDebug("H3", "swipe-actions.tsx:dismiss", "Dismiss auto peek", {
+        reason,
+        generationBefore: generation,
+        scrollLeft: container.scrollLeft,
+      });
+      // #endregion
       cancelled = true;
       generation += 1;
       skipScrollDerivedUpdatesRef.current = false;
       syncPositionFromScroll();
     };
 
-    container.addEventListener("pointerdown", dismiss);
-    container.addEventListener("touchstart", dismiss, { passive: true });
+    let trackingUserGesture = false;
+    let gestureStartScrollLeft = 0;
+    const userSwipeThresholdPx = 8;
+
+    const startTracking = () => {
+      trackingUserGesture = true;
+      gestureStartScrollLeft = container.scrollLeft;
+      // #region agent log
+      emitDebug("H2", "swipe-actions.tsx:startTracking", "Start user gesture tracking", {
+        gestureStartScrollLeft,
+      });
+      // #endregion
+    };
+
+    const stopTracking = () => {
+      trackingUserGesture = false;
+    };
+
+    const maybeDismissOnUserScroll = () => {
+      if (!trackingUserGesture || cancelled) return;
+      if (scrollLogCount < 6) {
+        scrollLogCount += 1;
+        // #region agent log
+        emitDebug("H2", "swipe-actions.tsx:maybeDismissOnUserScroll", "Gesture scroll observed", {
+          trackingUserGesture,
+          scrollLeft: container.scrollLeft,
+          gestureStartScrollLeft,
+          delta: Math.abs(container.scrollLeft - gestureStartScrollLeft),
+          userSwipeThresholdPx,
+        });
+        // #endregion
+      }
+      if (Math.abs(container.scrollLeft - gestureStartScrollLeft) >= userSwipeThresholdPx) {
+        dismiss("gesture-scroll");
+      }
+    };
+
+    const maybeDismissOnWheel = (event: WheelEvent) => {
+      if (cancelled) return;
+      const hasHorizontalIntent = Math.abs(event.deltaX) >= 1;
+      const shiftWheelHorizontal = event.shiftKey && Math.abs(event.deltaY) >= 1;
+      if (wheelLogCount < 6) {
+        wheelLogCount += 1;
+        // #region agent log
+        emitDebug("H1", "swipe-actions.tsx:maybeDismissOnWheel", "Wheel input observed", {
+          deltaX: event.deltaX,
+          deltaY: event.deltaY,
+          shiftKey: event.shiftKey,
+          hasHorizontalIntent,
+          shiftWheelHorizontal,
+        });
+        // #endregion
+      }
+      if (hasHorizontalIntent || shiftWheelHorizontal) {
+        dismiss("wheel");
+      }
+    };
+
+    container.addEventListener("pointerdown", startTracking);
+    container.addEventListener("pointerup", stopTracking);
+    container.addEventListener("pointercancel", stopTracking);
+    container.addEventListener("touchstart", startTracking, { passive: true });
+    container.addEventListener("touchend", stopTracking);
+    container.addEventListener("touchcancel", stopTracking);
+    container.addEventListener("scroll", maybeDismissOnUserScroll, { passive: true });
+    container.addEventListener("wheel", maybeDismissOnWheel, { passive: true });
 
     const runCycle = () => {
       if (cancelled) return;
       const g = generation;
+      if (cycleLogCount < 6) {
+        cycleLogCount += 1;
+        // #region agent log
+        emitDebug("H4", "swipe-actions.tsx:runCycle", "Auto peek cycle start", {
+          generation,
+          cancelled,
+          scrollLeft: container.scrollLeft,
+        });
+        // #endregion
+      }
       skipScrollDerivedUpdatesRef.current = true;
       container.scrollTo({ left: 0, behavior: "smooth" });
       setTimeout(() => {
-        if (g !== generation) return;
+        if (g !== generation) {
+          // #region agent log
+          emitDebug("H4", "swipe-actions.tsx:runCycle-left-timeout", "Abort left timeout due generation change", {
+            cycleGeneration: g,
+            generation,
+          });
+          // #endregion
+          return;
+        }
         container.scrollTo({ left: centerChild.offsetLeft, behavior: "smooth" });
         setTimeout(() => {
           skipScrollDerivedUpdatesRef.current = false;
-          if (g !== generation) return;
+          if (g !== generation) {
+            // #region agent log
+            emitDebug("H4", "swipe-actions.tsx:runCycle-center-timeout", "Abort center timeout due generation change", {
+              cycleGeneration: g,
+              generation,
+            });
+            // #endregion
+            return;
+          }
           syncPositionFromScroll();
           setTimeout(() => {
-            if (g !== generation) return;
+            if (g !== generation) {
+              // #region agent log
+              emitDebug("H4", "swipe-actions.tsx:runCycle-repeat-timeout", "Abort repeat timeout due generation change", {
+                cycleGeneration: g,
+                generation,
+              });
+              // #endregion
+              return;
+            }
             runCycle();
           }, 2200);
         }, 480);
       }, 520);
     };
+
+    // #region agent log
+    emitDebug("H5", "swipe-actions.tsx:effect-init", "Peek hint effect initialized", {
+      initialSnap,
+      peekHintUntilInteraction,
+      startScrollLeft: container.scrollLeft,
+    });
+    // #endregion
 
     const startId = setTimeout(() => {
       if (!cancelled) runCycle();
@@ -146,8 +290,14 @@ export function SwipeActions({
       generation += 1;
       clearTimeout(startId);
       skipScrollDerivedUpdatesRef.current = false;
-      container.removeEventListener("pointerdown", dismiss);
-      container.removeEventListener("touchstart", dismiss);
+      container.removeEventListener("pointerdown", startTracking);
+      container.removeEventListener("pointerup", stopTracking);
+      container.removeEventListener("pointercancel", stopTracking);
+      container.removeEventListener("touchstart", startTracking);
+      container.removeEventListener("touchend", stopTracking);
+      container.removeEventListener("touchcancel", stopTracking);
+      container.removeEventListener("scroll", maybeDismissOnUserScroll);
+      container.removeEventListener("wheel", maybeDismissOnWheel);
     };
   }, [peekHintUntilInteraction]);
 
