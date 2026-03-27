@@ -1,26 +1,29 @@
-import type { Slide } from "./slideTypes"
-import { DrawerSelectSlide } from "./DrawerSelectSlide"
-import { DrawerSlide } from "./DrawerSlide"
-import { GoodbyeSlide } from "./GoodbyeSlide"
-import { HapticRadioSlide } from "./HapticRadioSlide"
-import { HomeSlide } from "./HomeSlide"
-import { OrientationSlide } from "./OrientationSlide"
-import { StreamingTextSlide } from "./StreamingTextSlide"
-import { SwipeActionsSlide } from "./SwipeActionsSlide"
-import { TruncatedTextSlide } from "./TruncatedTextSlide"
+import type { Slide } from "./slideTypes";
+import { DrawerSelectSlide } from "./DrawerSelectSlide";
+import { DrawerSlide } from "./DrawerSlide";
+import { GoodbyeSlide } from "./GoodbyeSlide";
+import { HapticRadioSlide } from "./HapticRadioSlide";
+import { HomeSlide } from "./HomeSlide";
+import { OrientationSlide } from "./OrientationSlide";
+import { StreamingTextSlide } from "./StreamingTextSlide";
+import { SwipeActionsSlide } from "./SwipeActionsSlide";
+import { TruncatedTextSlide } from "./TruncatedTextSlide";
 
-export function getSlides(activeSlideId: string, soundEnabled: boolean): Slide[] {
+export function getSlides(
+  activeSlideId: string,
+  soundEnabled: boolean,
+): Slide[] {
   return [
     {
       id: "home",
       title: "Home",
       content: <HomeSlide />,
     },
-    {
-      id: "orientation",
-      title: "Orientation",
-      content: <OrientationSlide />,
-    },
+    // {
+    //   id: "orientation",
+    //   title: "Orientation",
+    //   content: <OrientationSlide />,
+    // },
     {
       id: "truncated-text",
       title: "TruncatedText",
@@ -46,15 +49,15 @@ export function getSlides(activeSlideId: string, soundEnabled: boolean): Slide[]
       title: "Drawer Select",
       content: <DrawerSelectSlide soundEnabled={soundEnabled} />,
     },
-    {
-      id: "streaming-text",
-      title: "AI Streaming Text",
-      content: <StreamingTextSlide isVisible={activeSlideId === "streaming-text"} soundEnabled={soundEnabled} />,
-    },
+    // {
+    //   id: "streaming-text",
+    //   title: "AI Streaming Text",
+    //   content: <StreamingTextSlide isVisible={activeSlideId === "streaming-text"} soundEnabled={soundEnabled} />,
+    // },
     {
       id: "goodbye",
       title: "Fin",
       content: <GoodbyeSlide />,
     },
-  ]
+  ];
 }
